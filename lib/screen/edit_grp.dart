@@ -4,56 +4,63 @@ import 'package:flutter/material.dart';
 import 'package:to_do_list/models/group_m.dart';
 import 'package:to_do_list/store_cls.dart';
 
-class AddGroup extends StatefulWidget {
+class EditGroup extends StatefulWidget {
+  int index;
+  EditGroup(this.index);
+
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
-    return AddGroupState();
+    return EditGroupState();
   }
 }
 
-class AddGroupState extends State<AddGroup> {
-  String? errorText = null;
-  int colorValue = Random().nextInt(Store().paperColor.length);
+class EditGroupState extends State<EditGroup> {
   TextEditingController inputCtrl = TextEditingController();
 
-  var selectDecoration = BoxDecoration(
-    shape: BoxShape.circle,
-    border: Border.all(
-      color: Colors.black,
-      width: 4,
-    ),
-  );
+  String? errorText = null;
+
+  late int colorValue;
+  @override
+  void initState() {
+    int ic = 0;
+    Store().paperColor.forEach((element) {
+      if (element.value == groupBox.getAt(widget.index)!.color) {
+        colorValue = ic;
+      }
+      ic++;
+    });
+
+    inputCtrl.text = groupBox.getAt(widget.index)!.name;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    //int grid count
+    //
     double gridCount = (Store().paperColor.length / 2);
     if (Store().paperColor.length.toInt().isOdd) {
       gridCount = (Store().paperColor.length / 2) + 1;
     }
 
-    //
     return Container(
       padding: EdgeInsets.all(12),
-      decoration:
-          BoxDecoration(color: Store().paperColor[colorValue].withOpacity(.4)),
+      decoration: BoxDecoration(
+        color: Store().paperColor[colorValue].withOpacity(.4),
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          //--------part 1
           TextField(
             controller: inputCtrl,
             decoration: InputDecoration(
-              labelText: 'Group Name',
-              prefixIcon: Icon(Icons.group_add),
-              errorText: errorText,
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-            ),
-            keyboardType: TextInputType.name,
+                labelText: 'Group Name',
+                prefixIcon: Icon(Icons.group_add),
+                errorText: errorText,
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(8))),
           ),
-          //---------- part 2
+          //------------2
 
           Column(
             children: [
@@ -92,9 +99,10 @@ class AddGroupState extends State<AddGroup> {
             indent: 20,
             endIndent: 20,
           ),
-          //------part 3
+
+          //--3
           ElevatedButton(
-            child: Text('Create Group'),
+            child: Text('Edit Group'),
             onPressed: () {
               if (inputCtrl.text.isEmpty) {
                 setState(() {
@@ -103,21 +111,18 @@ class AddGroupState extends State<AddGroup> {
                 return;
               }
               setState(() {
-                Store().groupAdd(
-                  Group(
-                    name: inputCtrl.text,
-                    color: Store().paperColor[colorValue].value,
-                    task: [],
-                  ),
+                Group g = Group(
+                  name: inputCtrl.text,
+                  color: Store().paperColor[colorValue].value,
+                  task: groupBox.getAt(widget.index)!.task,
                 );
-                //
+                Store().groupUpdate(widget.index, g);
                 errorText = null;
                 inputCtrl.clear();
               });
               Navigator.of(context).pop();
             },
           ),
-          //---
         ],
       ),
     );

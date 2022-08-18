@@ -2,19 +2,54 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:to_do_list/home_page.dart';
+import 'package:to_do_list/screen/edit_grp.dart';
 import 'models/group_m.dart';
 
 late Box<Group> groupBox;
 
 class Store {
+  List<Color> paperColor = [
+    Colors.blue,
+    Colors.brown,
+    Colors.cyan,
+    Colors.green,
+    Colors.indigo,
+    Colors.orange,
+    Colors.pink,
+    Colors.purple,
+    Colors.red,
+    Colors.yellow,
+  ];
+
   //Create Group FNC
   void groupAdd(Group g) {
     groupBox.add(g);
   }
 
+  //Update Group FNC
+  void groupUpdate(int i, Group g) {
+    groupBox.putAt(i, g);
+  }
+
+  //Delete Group FNC
   void deleteGroup(int i) {
     groupBox.deleteAt(i);
   }
+
+  BoxDecoration selectDecoration = BoxDecoration(
+    shape: BoxShape.circle,
+    border: Border.all(
+      color: Colors.black,
+      width: 3,
+    ),
+  );
+  BoxDecoration unselectDecoration = BoxDecoration(
+    shape: BoxShape.circle,
+    border: Border.all(
+      color: Colors.white,
+      width: 3,
+    ),
+  );
 
   void confirm(BuildContext ctx, int i) {
     showDialog(
@@ -64,7 +99,11 @@ class Store {
           trailing: IconButton(
             icon: Icon(Icons.edit),
             onPressed: () {
-              //confirm(ctx);
+              showModalBottomSheet(
+                  context: ctx,
+                  builder: (_) {
+                    return EditGroup(i);
+                  });
             },
           ),
         ),

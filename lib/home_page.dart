@@ -48,9 +48,9 @@ class HomePageState extends State {
   void initState() {
     groupBox = Hive.box('myBox');
     // groupBox.clear();
-    // groupBox.add(l[0]);
-    // groupBox.add(l[1]);
-    // groupBox.add(l[2]);
+    groupBox.add(l[0]);
+    groupBox.add(l[1]);
+    groupBox.add(l[2]);
     super.initState();
   }
 
@@ -97,7 +97,12 @@ class HomePageState extends State {
         valueListenable: groupBox.listenable(),
         builder: (context, value, child) {
           return Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(
+              top: 8,
+              right: 8,
+              left: 8,
+              bottom: 2,
+            ),
             child: GridView.builder(
               itemCount: groupBox.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -113,17 +118,14 @@ class HomePageState extends State {
           );
         },
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: ElevatedButton(
-        child: Text(
-          'ADD Group',
-          textAlign: TextAlign.center,
-        ),
+      //floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.group_add),
         onPressed: () {
           showModalBottomSheet(
               context: context,
               builder: (_) {
-                return ModalSheet();
+                return AddGroup();
               });
         },
       ),
