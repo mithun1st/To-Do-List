@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:to_do_list/home_page.dart';
+import 'package:to_do_list/models/task_m.dart';
 import 'package:to_do_list/screen/edit_grp.dart';
+import 'package:to_do_list/screen/task_scrn.dart';
 import 'models/group_m.dart';
 
 late Box<Group> groupBox;
@@ -36,18 +38,31 @@ class Store {
     groupBox.deleteAt(i);
   }
 
+  //--------------update task
+
+  void updateTask(int grpIndex, List<Task> task) {
+    groupBox.putAt(
+      grpIndex,
+      Group(
+        name: groupBox.getAt(grpIndex)!.name,
+        color: groupBox.getAt(grpIndex)!.color,
+        task: task,
+      ),
+    );
+  }
+
   BoxDecoration selectDecoration = BoxDecoration(
     shape: BoxShape.circle,
     border: Border.all(
       color: Colors.black,
-      width: 3,
+      width: 4,
     ),
   );
   BoxDecoration unselectDecoration = BoxDecoration(
     shape: BoxShape.circle,
     border: Border.all(
       color: Colors.white,
-      width: 3,
+      width: 4,
     ),
   );
 
@@ -81,63 +96,70 @@ class Store {
 
   Widget GroupList(int i, BuildContext ctx) {
     double bRadius = 10;
-    return GridTile(
-      footer: Container(
-        decoration: BoxDecoration(
-          color: Colors.black.withOpacity(.3),
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(bRadius),
-            bottomRight: Radius.circular(bRadius),
+    return GestureDetector(
+      child: GridTile(
+        footer: Container(
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(.3),
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(bRadius),
+              bottomRight: Radius.circular(bRadius),
+            ),
+          ),
+          child: GridTileBar(
+            leading: IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () => confirm(ctx, i),
+            ),
+            title: Text('Task: ${groupBox.getAt(i)!.task.length}'),
+            trailing: IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () {
+                showModalBottomSheet(
+                    context: ctx,
+                    builder: (_) {
+                      return EditGroup(i);
+                    });
+              },
+            ),
           ),
         ),
-        child: GridTileBar(
-          leading: IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: () => confirm(ctx, i),
-          ),
-          title: Text('Task: ${groupBox.getAt(i)!.task.length}'),
-          trailing: IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () {
-              showModalBottomSheet(
-                  context: ctx,
-                  builder: (_) {
-                    return EditGroup(i);
-                  });
-            },
-          ),
-        ),
-      ),
-      child: Container(
-        padding: const EdgeInsets.only(top: 14),
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black,
-              blurRadius: .4,
-            )
-          ],
-          borderRadius: BorderRadius.circular(bRadius),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(groupBox.getAt(i)!.color),
-              Color(groupBox.getAt(i)!.color).withOpacity(.7),
+        child: Container(
+          padding: const EdgeInsets.only(top: 14),
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black,
+                blurRadius: .4,
+              )
             ],
+            borderRadius: BorderRadius.circular(bRadius),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(groupBox.getAt(i)!.color),
+                Color(groupBox.getAt(i)!.color).withOpacity(.7),
+              ],
+            ),
           ),
-        ),
-        child: Text(
-          //'Dhaka To Rahs',
-          groupBox.getAt(i)?.name ?? 'xx',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
+          child: Text(
+            groupBox.getAt(i)?.name ?? 'xx',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
           ),
-          textAlign: TextAlign.center,
         ),
       ),
+      onTap: () {
+        Navigator.of(ctx).pushNamed(
+          TaskPage.routeName,
+          arguments: i,
+        );
+      },
     );
   }
 }

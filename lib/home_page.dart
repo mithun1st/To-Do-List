@@ -48,9 +48,9 @@ class HomePageState extends State {
   void initState() {
     groupBox = Hive.box('myBox');
     // groupBox.clear();
-    groupBox.add(l[0]);
-    groupBox.add(l[1]);
-    groupBox.add(l[2]);
+    // groupBox.add(l[0]);
+    // groupBox.add(l[1]);
+    // groupBox.add(l[2]);
     super.initState();
   }
 
