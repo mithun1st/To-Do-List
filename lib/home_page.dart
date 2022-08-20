@@ -98,7 +98,7 @@ class HomePageState extends State {
         builder: (context, value, child) {
           return Padding(
             padding: const EdgeInsets.only(
-              top: 8,
+              top: 4,
               right: 8,
               left: 8,
               bottom: 2,

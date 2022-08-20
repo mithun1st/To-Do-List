@@ -96,61 +96,76 @@ class Store {
 
   Widget GroupList(int i, BuildContext ctx) {
     double bRadius = 10;
+
+    int numOfDone = 0;
+    groupBox.getAt(i)!.task.forEach(
+      (element) {
+        if (element.isDone == true) {
+          numOfDone++;
+        }
+      },
+    );
+
     return GestureDetector(
-      child: GridTile(
-        footer: Container(
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(.3),
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(bRadius),
-              bottomRight: Radius.circular(bRadius),
+      child: Container(
+        child: GridTile(
+          footer: Container(
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(.3),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(bRadius),
+                bottomRight: Radius.circular(bRadius),
+              ),
+            ),
+            child: GridTileBar(
+              leading: IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () => confirm(ctx, i),
+              ),
+              title: Text('$numOfDone / ${groupBox.getAt(i)!.task.length}',textAlign: TextAlign.center,),
+              trailing: IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () {
+                  showModalBottomSheet(
+                      context: ctx,
+                      builder: (_) {
+                        return EditGroup(i);
+                      });
+                },
+              ),
             ),
           ),
-          child: GridTileBar(
-            leading: IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: () => confirm(ctx, i),
-            ),
-            title: Text('Task: ${groupBox.getAt(i)!.task.length}'),
-            trailing: IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () {
-                showModalBottomSheet(
-                    context: ctx,
-                    builder: (_) {
-                      return EditGroup(i);
-                    });
-              },
-            ),
-          ),
-        ),
-        child: Container(
-          padding: const EdgeInsets.only(top: 14),
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black,
-                blurRadius: .4,
-              )
-            ],
-            borderRadius: BorderRadius.circular(bRadius),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(groupBox.getAt(i)!.color),
-                Color(groupBox.getAt(i)!.color).withOpacity(.7),
+          child: Container(
+            padding: const EdgeInsets.only(top: 14),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.black38,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black,
+                  blurRadius: .4,
+                )
               ],
+              borderRadius: BorderRadius.circular(bRadius),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(groupBox.getAt(i)!.color),
+                  Color(groupBox.getAt(i)!.color).withOpacity(.7),
+                ],
+              ),
             ),
-          ),
-          child: Text(
-            groupBox.getAt(i)?.name ?? 'xx',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
+            child: Text(
+              groupBox.getAt(i)?.name ?? 'xx',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
           ),
         ),
       ),

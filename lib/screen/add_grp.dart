@@ -24,6 +24,7 @@ class AddGroupState extends State<AddGroup> {
       width: 4,
     ),
   );
+  
 
   @override
   Widget build(BuildContext context) {
@@ -34,37 +35,45 @@ class AddGroupState extends State<AddGroup> {
     }
 
     //
-    return Container(
-      padding: EdgeInsets.all(12),
-      decoration:
-          BoxDecoration(color: Store().paperColor[colorValue].withOpacity(.4)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          //--------part 1
-          TextField(
-            controller: inputCtrl,
-            decoration: InputDecoration(
-              labelText: 'Group Name',
-              prefixIcon: Icon(Icons.group_add),
-              errorText: errorText,
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-            ),
-            keyboardType: TextInputType.name,
-          ),
-          //---------- part 2
-
-          Column(
-            children: [
-              Container(
-                width: double.infinity,
-                child: Text('Select Color:'),
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.only(
+          top: 20,
+          left: 12,
+          right: 12,
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        decoration: BoxDecoration(
+            color: Store().paperColor[colorValue].withOpacity(.4)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            //--------part 1
+            TextField(
+              controller: inputCtrl,
+              decoration: InputDecoration(
+                labelText: 'Group Name',
+                prefixIcon: Icon(Icons.group_add),
+                errorText: errorText,
+                filled: true,
+                fillColor: Colors.grey.shade200,
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
-              Container(
-                height: 150,
-                child: GridView.count(
+              keyboardType: TextInputType.name,
+            ),
+            //---------- part 2
+
+            Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(top: 20),
+                  width: double.infinity,
+                  child: Text('Select Color:'),
+                ),
+                GridView.count(
                   primary: false,
+                  shrinkWrap: true,
                   crossAxisCount: gridCount.toInt(),
                   children: Store().paperColor.map((e) {
                     return IconButton(
@@ -77,48 +86,51 @@ class AddGroupState extends State<AddGroup> {
                         ),
                       ),
                       onPressed: () {
-                        //
+                        FocusScope.of(context).unfocus();
                         colorValue = Store().paperColor.indexOf(e);
                         setState(() {});
                       },
                     );
                   }).toList(),
                 ),
+              ],
+            ),
+            const Divider(
+              color: Colors.black,
+              indent: 20,
+              endIndent: 20,
+            ),
+            //------part 3
+            Container(
+              margin: EdgeInsets.only(bottom: 15),
+              child: ElevatedButton(
+                child: Text('Create Group'),
+                onPressed: () {
+                  if (inputCtrl.text.isEmpty) {
+                    setState(() {
+                      errorText = 'Text is Empty';
+                    });
+                    return;
+                  }
+                  setState(() {
+                    Store().groupAdd(
+                      Group(
+                        name: inputCtrl.text,
+                        color: Store().paperColor[colorValue].value,
+                        task: [],
+                      ),
+                    );
+                    //
+                    errorText = null;
+                    inputCtrl.clear();
+                  });
+                  Navigator.of(context).pop();
+                },
               ),
-            ],
-          ),
-          const Divider(
-            color: Colors.black,
-            indent: 20,
-            endIndent: 20,
-          ),
-          //------part 3
-          ElevatedButton(
-            child: Text('Create Group'),
-            onPressed: () {
-              if (inputCtrl.text.isEmpty) {
-                setState(() {
-                  errorText = 'Text is Empty';
-                });
-                return;
-              }
-              setState(() {
-                Store().groupAdd(
-                  Group(
-                    name: inputCtrl.text,
-                    color: Store().paperColor[colorValue].value,
-                    task: [],
-                  ),
-                );
-                //
-                errorText = null;
-                inputCtrl.clear();
-              });
-              Navigator.of(context).pop();
-            },
-          ),
-          //---
-        ],
+            ),
+            //---
+          ],
+        ),
       ),
     );
   }
