@@ -23,6 +23,15 @@ class TaskPageState extends State<TaskPage> {
     List<Task> task = groupBox.getAt(groupIndex)!.task;
     AppBar appBar = AppBar(
       title: Text(groupBox.getAt(groupIndex)!.name),
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(groupBox.getAt(groupIndex)!.color), Colors.black38],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+      ),
       backgroundColor: Color(groupBox.getAt(groupIndex)!.color),
       actions: [
         IconButton(
@@ -120,8 +129,6 @@ class TaskPageState extends State<TaskPage> {
               margin: EdgeInsets.only(top: 8),
               padding: EdgeInsets.symmetric(horizontal: 4),
               child: ListView.builder(
-                //reverse: true,
-                //,
                 itemCount: task.length,
                 itemBuilder: (context, index) {
                   return Card(
@@ -162,40 +169,38 @@ class TaskPageState extends State<TaskPage> {
                                         fontWeight: FontWeight.bold,
                                       ),
                               ),
-                        trailing: Container(
-                          width: 100,
-                          child: Row(
-                            children: [
-                              IconButton(
-                                icon: Icon(
-                                  (isEditing && editIndex == index)
-                                      ? Icons.done
-                                      : Icons.edit,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    editIndex = index;
-                                    isEditing = !isEditing;
-                                  });
-                                  if (isEditing) {
-                                    taskEditCtrl.text = task[index].taskName;
-                                  } else {
-                                    task[index].taskName = taskEditCtrl.text;
-                                    Store().updateTask(groupIndex, task);
-                                  }
-                                },
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                (isEditing && editIndex == index)
+                                    ? Icons.done
+                                    : Icons.edit,
                               ),
-                              Checkbox(
-                                value: task[index].isDone,
-                                onChanged: (v) {
-                                  setState(() {
-                                    task[index].isDone = v!;
-                                  });
+                              onPressed: () {
+                                setState(() {
+                                  editIndex = index;
+                                  isEditing = !isEditing;
+                                });
+                                if (isEditing) {
+                                  taskEditCtrl.text = task[index].taskName;
+                                } else {
+                                  task[index].taskName = taskEditCtrl.text;
                                   Store().updateTask(groupIndex, task);
-                                },
-                              ),
-                            ],
-                          ),
+                                }
+                              },
+                            ),
+                            Checkbox(
+                              value: task[index].isDone,
+                              onChanged: (v) {
+                                setState(() {
+                                  task[index].isDone = v!;
+                                });
+                                Store().updateTask(groupIndex, task);
+                              },
+                            ),
+                          ],
                         ),
                       ),
                     ),

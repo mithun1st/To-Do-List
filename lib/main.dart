@@ -10,9 +10,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
+
   Hive.registerAdapter(GroupAdapter());
   Hive.registerAdapter(TaskAdapter());
+
   await Hive.openBox<Group>('myBox');
+  await Hive.openBox<Task>('myTaskBox');
 
   runApp(MyApp());
 }
@@ -23,7 +26,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: HomePage(),
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.indigo,
       ),
       routes: {
         TaskPage.routeName: (context) => TaskPage(),

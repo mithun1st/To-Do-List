@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
-import 'package:to_do_list/home_page.dart';
 import 'package:to_do_list/models/task_m.dart';
 import 'package:to_do_list/screen/edit_grp.dart';
 import 'package:to_do_list/screen/task_scrn.dart';
@@ -15,11 +13,11 @@ class Store {
     Colors.brown,
     Colors.cyan,
     Colors.green,
-    Colors.indigo,
     Colors.orange,
     Colors.pink,
     Colors.purple,
     Colors.red,
+    Colors.teal,
     Colors.yellow,
   ];
 
@@ -122,7 +120,10 @@ class Store {
                 icon: Icon(Icons.delete),
                 onPressed: () => confirm(ctx, i),
               ),
-              title: Text('$numOfDone / ${groupBox.getAt(i)!.task.length}',textAlign: TextAlign.center,),
+              title: Text(
+                '$numOfDone / ${groupBox.getAt(i)!.task.length}',
+                textAlign: TextAlign.center,
+              ),
               trailing: IconButton(
                 icon: Icon(Icons.edit),
                 onPressed: () {

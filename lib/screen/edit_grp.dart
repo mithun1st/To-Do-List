@@ -111,7 +111,7 @@ class EditGroupState extends State<EditGroup> {
             Container(
               margin: EdgeInsets.only(bottom: 15),
               child: ElevatedButton(
-                child: Text('Edit Group'),
+                child: Text('Update Group'),
                 onPressed: () {
                   if (inputCtrl.text.isEmpty) {
                     setState(() {

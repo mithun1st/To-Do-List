@@ -5,6 +5,7 @@ import 'package:to_do_list/screen/add_grp.dart';
 
 import 'package:to_do_list/models/group_m.dart';
 import 'package:to_do_list/models/task_m.dart';
+import 'package:to_do_list/screen/drawer.dart';
 import 'package:to_do_list/store_cls.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,42 +16,10 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State {
-  List<Group> l = [
-    Group(
-      name: 'g1',
-      color: Colors.red.value,
-      task: [
-        Task(isDone: true, taskName: 't1'),
-        Task(isDone: false, taskName: 't2'),
-      ],
-    ),
-    //---
-    Group(
-      name: 'g2',
-      color: Colors.green.value,
-      task: [],
-    ),
-    //--
-    Group(
-      name: 'g3',
-      color: Colors.blue.value,
-      task: [
-        Task(isDone: true, taskName: 't1'),
-        Task(isDone: true, taskName: 't2'),
-        Task(isDone: true, taskName: 't3'),
-        Task(isDone: false, taskName: 't4'),
-        Task(isDone: false, taskName: 't5'),
-      ],
-    ),
-  ];
-
   @override
   void initState() {
     groupBox = Hive.box('myBox');
     // groupBox.clear();
-    // groupBox.add(l[0]);
-    // groupBox.add(l[1]);
-    // groupBox.add(l[2]);
     super.initState();
   }
 
@@ -92,7 +61,11 @@ class HomePageState extends State {
           ),
         ],
       ),
-      drawer: Ink(),
+      drawer: Drawer(
+        elevation: 0,
+        backgroundColor: Colors.grey.shade200,
+        child: TaskDrawer(),
+      ),
       body: ValueListenableBuilder(
         valueListenable: groupBox.listenable(),
         builder: (context, value, child) {
