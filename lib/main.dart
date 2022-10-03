@@ -1,21 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:to_do_list/controller/data.dart';
 import 'package:to_do_list/home_page.dart';
-import 'package:to_do_list/models/group_m.dart';
-import 'package:to_do_list/models/task_m.dart';
-import 'package:to_do_list/screen/task_scrn.dart';
+import 'package:to_do_list/screen/pages/task_scrn.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await Hive.initFlutter();
 
-  Hive.registerAdapter(GroupAdapter());
-  Hive.registerAdapter(TaskAdapter());
-
-  await Hive.openBox<Group>('myBox');
-  await Hive.openBox<Task>('myTaskBox');
+  Data.registerAdapter();
+  await Data.openBox();
 
   runApp(MyApp());
 }
@@ -23,12 +17,14 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    print('-----------------------buildFnc');
     return MaterialApp(
-      home: HomePage(),
+      //home: HomePage(),
       theme: ThemeData(
         primarySwatch: Colors.indigo,
       ),
       routes: {
+        '/': (context) => HomePage(),
         TaskPage.routeName: (context) => TaskPage(),
       },
     );

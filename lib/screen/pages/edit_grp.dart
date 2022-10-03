@@ -1,8 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:to_do_list/controller/data.dart';
 import 'package:to_do_list/models/group_m.dart';
-import 'package:to_do_list/store_cls.dart';
+import 'package:to_do_list/screen/theme/theme.dart';
+import 'package:to_do_list/screen/widget/store_cls.dart';
+
+import '../../controller/services.dart';
 
 class EditGroup extends StatefulWidget {
   int index;
@@ -24,7 +28,7 @@ class EditGroupState extends State<EditGroup> {
   @override
   void initState() {
     int ic = 0;
-    Store().paperColor.forEach((element) {
+    paperColor.forEach((element) {
       if (element.value == groupBox.getAt(widget.index)!.color) {
         colorValue = ic;
       }
@@ -38,9 +42,9 @@ class EditGroupState extends State<EditGroup> {
   @override
   Widget build(BuildContext context) {
     //
-    double gridCount = (Store().paperColor.length / 2);
-    if (Store().paperColor.length.toInt().isOdd) {
-      gridCount = (Store().paperColor.length / 2) + 1;
+    double gridCount = (paperColor.length / 2);
+    if (paperColor.length.toInt().isOdd) {
+      gridCount = (paperColor.length / 2) + 1;
     }
 
     return SingleChildScrollView(
@@ -52,7 +56,7 @@ class EditGroupState extends State<EditGroup> {
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
         decoration: BoxDecoration(
-          color: Store().paperColor[colorValue].withOpacity(.4),
+          color: paperColor[colorValue].withOpacity(.4),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -81,19 +85,19 @@ class EditGroupState extends State<EditGroup> {
                   primary: false,
                   shrinkWrap: true,
                   crossAxisCount: gridCount.toInt(),
-                  children: Store().paperColor.map((e) {
+                  children: paperColor.map((e) {
                     return IconButton(
                       icon: Container(
-                        decoration: colorValue == Store().paperColor.indexOf(e)
-                            ? Store().selectDecoration
-                            : Store().unselectDecoration,
+                        decoration: colorValue == paperColor.indexOf(e)
+                            ? selectDecoration
+                            : unselectDecoration,
                         child: CircleAvatar(
                           backgroundColor: e,
                         ),
                       ),
                       onPressed: () {
                         FocusScope.of(context).unfocus();
-                        colorValue = Store().paperColor.indexOf(e);
+                        colorValue = paperColor.indexOf(e);
                         setState(() {});
                       },
                     );
@@ -122,10 +126,10 @@ class EditGroupState extends State<EditGroup> {
                   setState(() {
                     Group g = Group(
                       name: inputCtrl.text,
-                      color: Store().paperColor[colorValue].value,
+                      color: paperColor[colorValue].value,
                       task: groupBox.getAt(widget.index)!.task,
                     );
-                    Store().groupUpdate(widget.index, g);
+                    groupUpdate(widget.index, g);
                     errorText = null;
                     inputCtrl.clear();
                   });

@@ -1,8 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:to_do_list/controller/services.dart';
 import 'package:to_do_list/models/group_m.dart';
-import 'package:to_do_list/store_cls.dart';
+import 'package:to_do_list/screen/theme/theme.dart';
+import 'package:to_do_list/screen/widget/store_cls.dart';
 
 class AddGroup extends StatefulWidget {
   @override
@@ -14,24 +16,15 @@ class AddGroup extends StatefulWidget {
 
 class AddGroupState extends State<AddGroup> {
   String? errorText = null;
-  int colorValue = Random().nextInt(Store().paperColor.length);
+  int colorValue = Random().nextInt(paperColor.length);
   TextEditingController inputCtrl = TextEditingController();
-
-  var selectDecoration = BoxDecoration(
-    shape: BoxShape.circle,
-    border: Border.all(
-      color: Colors.black,
-      width: 4,
-    ),
-  );
-  
 
   @override
   Widget build(BuildContext context) {
     //int grid count
-    double gridCount = (Store().paperColor.length / 2);
-    if (Store().paperColor.length.toInt().isOdd) {
-      gridCount = (Store().paperColor.length / 2) + 1;
+    double gridCount = (paperColor.length / 2);
+    if (paperColor.length.toInt().isOdd) {
+      gridCount = (paperColor.length / 2) + 1;
     }
 
     //
@@ -43,8 +36,8 @@ class AddGroupState extends State<AddGroup> {
           right: 12,
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        decoration: BoxDecoration(
-            color: Store().paperColor[colorValue].withOpacity(.4)),
+        decoration:
+            BoxDecoration(color: paperColor[colorValue].withOpacity(.4)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -75,19 +68,19 @@ class AddGroupState extends State<AddGroup> {
                   primary: false,
                   shrinkWrap: true,
                   crossAxisCount: gridCount.toInt(),
-                  children: Store().paperColor.map((e) {
+                  children: paperColor.map((e) {
                     return IconButton(
                       icon: Container(
-                        decoration: colorValue == Store().paperColor.indexOf(e)
-                            ? Store().selectDecoration
-                            : Store().unselectDecoration,
+                        decoration: colorValue == paperColor.indexOf(e)
+                            ? selectDecoration
+                            : unselectDecoration,
                         child: CircleAvatar(
                           backgroundColor: e,
                         ),
                       ),
                       onPressed: () {
                         FocusScope.of(context).unfocus();
-                        colorValue = Store().paperColor.indexOf(e);
+                        colorValue = paperColor.indexOf(e);
                         setState(() {});
                       },
                     );
@@ -113,10 +106,10 @@ class AddGroupState extends State<AddGroup> {
                     return;
                   }
                   setState(() {
-                    Store().groupAdd(
+                    groupAdd(
                       Group(
                         name: inputCtrl.text,
-                        color: Store().paperColor[colorValue].value,
+                        color: paperColor[colorValue].value,
                         task: [],
                       ),
                     );

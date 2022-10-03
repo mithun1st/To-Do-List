@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:to_do_list/screen/add_grp.dart';
-
+import 'package:to_do_list/controller/data.dart';
+import 'package:to_do_list/controller/services.dart';
 import 'package:to_do_list/models/group_m.dart';
-import 'package:to_do_list/models/task_m.dart';
-import 'package:to_do_list/screen/drawer.dart';
-import 'package:to_do_list/store_cls.dart';
+import 'package:to_do_list/screen/pages/add_grp.dart';
+import 'package:to_do_list/screen/pages/drawer.dart';
+import 'package:to_do_list/screen/widget/store_cls.dart';
+import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -29,19 +29,35 @@ class HomePageState extends State {
     super.dispose();
   }
 
-  void sState() {
-    setState(() {});
-    print('state change');
-  }
+  // void sState() {
+  //   setState(() {});
+  //   print('state change');
+  // }
 
 //------------------------------
   @override
   Widget build(BuildContext context) {
+    print('-----------------------buildFnc1');
     return Scaffold(
+      backgroundColor: Colors.indigo.shade50,
       appBar: AppBar(
         title: const Text('To Do List'),
         centerTitle: true,
         actions: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              //Text('DarkMode'),
+              Switch(
+                value: isDark,
+                onChanged: (value) {
+                  setState(() {
+                    isDark = value;
+                  });
+                },
+              )
+            ],
+          ),
           PopupMenuButton(
             onSelected: (value) {
               print(value);
@@ -50,12 +66,10 @@ class HomePageState extends State {
               PopupMenuItem(
                 child: Text('About'),
                 value: 'value 1',
-                onTap: null,
               ),
               PopupMenuItem(
                 child: Text('Setting'),
                 value: 'value 2',
-                onTap: null,
               ),
             ],
           ),
@@ -76,24 +90,35 @@ class HomePageState extends State {
               left: 8,
               bottom: 2,
             ),
-            child: GridView.builder(
-              itemCount: groupBox.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 30,
-                childAspectRatio: 3 / 2,
-              ),
-              itemBuilder: (context, index) {
-                return Store().GroupList(index, context);
-              },
-            ),
+            //-------
+            child: ReorderableGridView.builder(
+                onReorder: (oldIndex, newIndex) {
+                  setState(() {
+                    Group? grp = groupBox.getAt(oldIndex);
+                    groupBox.putAt(oldIndex, groupBox.getAt(newIndex)!);
+                    groupBox.putAt(newIndex, grp!);
+                  });
+                },
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 30,
+                  childAspectRatio: 3 / 2,
+                ),
+                itemCount: groupBox.length,
+                itemBuilder: (context, index) {
+                  return GroupList(index, context);
+                }),
+            //-------\
           );
         },
       ),
       //floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.group_add),
+        child: const Icon(
+          Icons.edit_note_rounded,
+          size: 40,
+        ),
         onPressed: () {
           showModalBottomSheet(
               context: context,
